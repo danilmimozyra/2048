@@ -116,14 +116,12 @@ export class GameGrid {
 
             let low = 0, high = 1;
 
-            while (high < this.sideLength && this.getTileAt(high, col).isEmpty()) high++;
-
             while (high < this.sideLength) {
+                while (high < this.sideLength && this.getTileAt(high, col).isEmpty()) high++;
+
                 let moveRes = this.handleMove(high, col, low, col);
 
                 if (moveRes !== MoveResult.SUCCESS) low++;
-
-                while (high < this.sideLength && this.getTileAt(high, col).isEmpty()) high++;
             }
         }
     }
@@ -133,14 +131,12 @@ export class GameGrid {
 
             let low = this.sideLength, high = this.sideLength - 1;
 
-            while (high >= 0 && this.getTileAt(high, col).isEmpty()) high--;
-
             while (high >= 0) {
+                while (high >= 0 && this.getTileAt(high, col).isEmpty()) high--;
+
                 let moveRes = this.handleMove(high, col, low, col);
 
                 if (moveRes !== MoveResult.SUCCESS) low--;
-
-                while (high >= 0 && this.getTileAt(high, col).isEmpty()) high--;
             }
         }
     }
@@ -150,14 +146,12 @@ export class GameGrid {
 
             let low = 0, high = 1;
 
-            while (high < this.sideLength && this.getTileAt(row, high).isEmpty()) high++;
-
             while (high < this.sideLength) {
+                while (high < this.sideLength && this.getTileAt(row, high).isEmpty()) high++;
+
                 let moveRes = this.handleMove(row, high, row, low);
 
                 if (moveRes !== MoveResult.SUCCESS) low++;
-
-                while (high < this.sideLength && this.getTileAt(row, high).isEmpty()) high++;
             }
         }
     }
@@ -167,14 +161,12 @@ export class GameGrid {
 
             let low = this.sideLength, high = this.sideLength - 1;
 
-            while (high >= 0 && this.getTileAt(row, high).isEmpty()) high--;
-
             while (high >= 0) {
+                while (high >= 0 && this.getTileAt(row, high).isEmpty()) high--;
+
                 let moveRes = this.handleMove(row, high, row, low);
 
                 if (moveRes !== MoveResult.SUCCESS) low--;
-
-                while (high >= 0 && this.getTileAt(row, high).isEmpty()) high--;
             }
         }
     }
@@ -186,9 +178,13 @@ export class GameGrid {
     }
 
     private getTileMoveResult(fromRow: number, fromCol: number, toRow: number, toCol: number): string {
+        if (!this.isPositionValid(fromRow, fromCol) || !this.isPositionValid(toRow, toCol)) {
+            return MoveResult.ILLEGAL;
+        }
+
         let tile = this.getTileAt(fromRow, fromCol);
 
-        if (!this.isPositionValid(toRow, toCol) || tile.isEmpty()) {
+        if (tile.isEmpty()) {
             return MoveResult.ILLEGAL;
         }
 
