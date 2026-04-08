@@ -129,7 +129,7 @@ export class GameGrid {
     moveDown() {
         for (let col = 0; col < this.sideLength; col++) {
 
-            let low = this.sideLength, high = this.sideLength - 1;
+            let low = this.sideLength - 1, high = this.sideLength - 2;
 
             while (high >= 0) {
                 while (high >= 0 && this.getTileAt(high, col).isEmpty()) high--;
@@ -159,7 +159,7 @@ export class GameGrid {
     moveRight() {
         for (let row = 0; row < this.sideLength; row++) {
 
-            let low = this.sideLength, high = this.sideLength - 1;
+            let low = this.sideLength - 1, high = this.sideLength - 2;
 
             while (high >= 0) {
                 while (high >= 0 && this.getTileAt(row, high).isEmpty()) high--;
