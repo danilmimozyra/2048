@@ -1,5 +1,4 @@
-// @ts-ignore
-import {strict as assert} from "node:assert";
+import {assert} from "./util.ts";
 
 export class GameTile {
     private readonly power: number;
@@ -84,6 +83,10 @@ export class GameGrid {
     getTileAt(row: number, col: number): GameTile {
         assert(this.isPositionValid(row, col));
         return this.grid[row + col * this.sideLength];
+    }
+
+    getTileArray(): GameTile[] {
+        return this.grid;
     }
 
     getSideLength(): number {
