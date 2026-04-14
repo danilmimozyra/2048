@@ -2,11 +2,11 @@ export const themes = {
   light: {
     background: "#ede8d0",
     board_background: "#d5b699",
-    board: "#b89470",
+    board: "#8f6a4f",
     title: "#230f08",
 
     tileColors: [
-      "#ede0c8",
+      "#c9a889",
       "#f2b179",
       "#f59563",
       "#f67c5f",
