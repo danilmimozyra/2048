@@ -17,6 +17,7 @@ export const themes = {
       "#f39c12",
       "#e67e22",
       "#d35400",
+      "#c0392b",
     ],
   },
   dark: {
@@ -37,6 +38,7 @@ export const themes = {
       "#a855f7",
       "#d946ef",
       "#ec4899",
+      "#f72585",
     ],
   },
 } as const;
