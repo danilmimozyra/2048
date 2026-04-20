@@ -1,6 +1,7 @@
 import "./index.css";
 import { themes } from "./themes";
 import { useState, useEffect } from "react";
+import Game from "./components/Game.tsx";
 
 function App() {
   const [themeName, setThemeName] = useState<"light" | "dark">("light");
@@ -28,8 +29,6 @@ function App() {
     root.style.setProperty("--title", theme.title);
   }, [theme]);
 
-  const tiles = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0];
-
   return (
     <div
       className="game"
@@ -56,19 +55,7 @@ function App() {
       </header>
 
       <main>
-        <div className="board" style={{ background: theme.board }}>
-          {tiles.map((item) => (
-            <div
-              className="tile"
-              style={{
-                background: theme.tileColors[item],
-                color: theme.title,
-              }}
-            >
-              {item != 0 ? 1 << item : ""}
-            </div>
-          ))}
-        </div>
+        <Game tileColors={theme["tileColors"]}/>
       </main>
     </div>
   );
