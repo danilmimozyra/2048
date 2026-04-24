@@ -4,7 +4,6 @@ import type {Direction} from "../types.ts";
 function useKeyboard(move: (direction: Direction) => void) {
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
-            console.log("handleKey", e);
             switch (e.key) {
                 case "ArrowUp":
                 case "w":
