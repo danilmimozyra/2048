@@ -1,64 +1,37 @@
 import "./index.css";
-import { themes } from "./themes";
-import { useState, useEffect } from "react";
-import Game from "./components/Game.tsx";
+import useTheme from "./hooks/useTheme.tsx";
+import GameHeader from "./components/GameHeader.tsx";
+import GameBoard from "./components/GameBoard.tsx";
+import useGame from "./hooks/useGame.tsx";
+import {useEffect, useState} from "react";
+import type {AnimPhase} from "./types.ts";
+import {copyTileArray} from "./util.ts";
+
+const TILE_MOVE_TIME_MS = 200;
+const TILE_SPAWN_TIME_MS = 250;
 
 function App() {
-  const [themeName, setThemeName] = useState<"light" | "dark">("light");
-  const theme = themes[themeName];
+    const theme = useTheme();
+    const [animPhase, setAnimPhase] = useState<AnimPhase>("idle");
+    const {tiles, move, score, newGame} = useGame(animPhase, setAnimPhase, TILE_MOVE_TIME_MS, TILE_SPAWN_TIME_MS);
 
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    useEffect(() => {
+        const style = document.documentElement.style;
 
-    const updateTheme = () => {
-      setThemeName(media.matches ? "dark" : "light");
-    };
+        style.setProperty("--tile-move-time", `${TILE_MOVE_TIME_MS}ms`);
+        style.setProperty("--tile-spawn-time", `${TILE_SPAWN_TIME_MS}ms`);
+    }, [TILE_MOVE_TIME_MS, TILE_SPAWN_TIME_MS]);
 
-    updateTheme();
-
-    media.addEventListener("change", updateTheme);
-
-    return () => media.removeEventListener("change", updateTheme);
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    root.style.setProperty("--background", theme.background);
-    root.style.setProperty("--board", theme.board);
-    root.style.setProperty("--title", theme.title);
-  }, [theme]);
-
-  return (
-    <div
-      className="game"
-      style={{ background: theme.background, color: theme.title }}
-    >
-      <header className="header">
-        <h1 className="title">2048</h1>
-
-        <div className="scores">
-          <div className="score-box">
-            <span>
-              Score: <strong>0</strong>
-            </span>
-          </div>
-
-          <div className="score-box">
-            <span>
-              Best: <strong>0</strong>
-            </span>
-          </div>
+    return (
+        <div className="game">
+            <header>
+                <GameHeader score={score} bestScore={0} newGameCallback={newGame}/>
+            </header>
+            <main>
+                <GameBoard tiles={copyTileArray(tiles)} animPhase={animPhase} move={move} tileColors={theme.tileColors}/>
+            </main>
         </div>
-
-        <button className="new-game-btn">New Game</button>
-      </header>
-
-      <main>
-        <Game tileColors={theme["tileColors"]}/>
-      </main>
-    </div>
-  );
+    );
 }
 
 export default App;
