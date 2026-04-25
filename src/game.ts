@@ -1,15 +1,13 @@
-import type {Direction, GameState, Tile} from "./types.ts";
-import {assert, copyTile, emptyGameState, mergeGameStates, reduceGameStateToTiles} from "./util.ts";
+import type {Direction, Tile} from "./types.ts";
+import {assert, copyTile, copyTileArray} from "./util.ts";
 
 type Axis = "row" | "col";
 
 let maxId = 0;
 const nextId = () => ++maxId;
 
-function moveLine(line: Tile[], moveAxis: Axis, ascending: boolean): GameState {
-    assert(line.length <= 4);
-
-    const result = emptyGameState();
+function moveLine(tiles: Tile[], line: Tile[], moveAxis: Axis, ascending: boolean) {
+    assert(line.length > 0 && line.length <= 4);
 
     let targetPos = ascending ? 0 : 3;
     const nextTargetPos = () => targetPos += ascending ? 1 : -1;
@@ -19,47 +17,39 @@ function moveLine(line: Tile[], moveAxis: Axis, ascending: boolean): GameState {
 
     for (const tile of line) {
         if (!didMerge && tile.power === last.power) {
-            const movedTile = copyTile(tile, { [moveAxis]: last[moveAxis] });
-            const mergedTile = copyTile(last, { id: nextId(), power: tile.power + 1 });
+            tile[moveAxis] = last[moveAxis];
+            tile.state = "mergeMoved";
 
-            if (result.unmodified.some(t => t.id === last.id)) {
-                result.unmodified.splice(result.unmodified.findIndex(t => t.id === last.id), 1);
-            } else {
-                result.moved.splice(result.moved.findIndex(t => t.id === last.id), 1);
-            }
+            last.state = "mergeMoved";
 
-            result.mergeMoved.push(movedTile, last);
-            result.merged.push(mergedTile);
+            const mergedTile = copyTile(last, { id: nextId(), power: tile.power + 1, state: "merged" });
+            tiles.push(mergedTile);
 
             last = mergedTile;
             didMerge = true;
         }
 
         else if (tile[moveAxis] !== targetPos) {
-            const movedTile = copyTile(tile, { [moveAxis]: targetPos });
+            tile[moveAxis] = targetPos;
+            tile.state = "moved";
 
-            result.moved.push(movedTile);
-
-            last = movedTile;
+            last = tile;
             didMerge = false;
             nextTargetPos();
         }
 
         else {
-            result.unmodified.push(copyTile(tile));
+            tile.state = "unmodified";
 
             last = tile;
             didMerge = false;
             nextTargetPos();
         }
     }
-
-    return result;
 }
 
-function moveTiles(tiles: Tile[], iterAxis: Axis, ascending: boolean): GameState {
+function moveTiles(tiles: Tile[], iterAxis: Axis, ascending: boolean) {
     const moveAxis: Axis = iterAxis === "row" ? "col" : "row";
-    const states: GameState[] = [];
 
     for (let iAxis = 0; iAxis < 4; iAxis++) {
         const line = tiles.filter(t => t[iterAxis] === iAxis);
@@ -68,13 +58,11 @@ function moveTiles(tiles: Tile[], iterAxis: Axis, ascending: boolean): GameState
 
         line.sort((a, b) => ascending ? a[moveAxis] - b[moveAxis] : b[moveAxis] - a[moveAxis]);
 
-        states.push(moveLine(line, moveAxis, ascending));
+        moveLine(tiles, line, moveAxis, ascending);
     }
-
-    return mergeGameStates(...states);
 }
 
-export function spawnTile(tiles: Tile[]): Tile {
+export function spawnTile(tiles: Tile[]) {
     const occupied = new Set(tiles.map(t => (t.row << 2) | t.col));
     const empty: { row: number, col: number }[] = [];
 
@@ -87,32 +75,30 @@ export function spawnTile(tiles: Tile[]): Tile {
     const power = Math.random() < 0.9 ? 1 : 2;
     const pos = empty[Math.floor(Math.random() * empty.length)]!;
 
-    return {
+    tiles.push({
         id: nextId(),
         power: power,
+        state: "spawned",
         row: pos.row,
         col: pos.col,
-    };
+    });
 }
 
-export function move(gameState: GameState, dir: Direction): GameState {
-    const tiles = reduceGameStateToTiles(gameState);
+export function move(tiles: Tile[], dir: Direction): Tile[] {
+    tiles = copyTileArray(tiles).filter(t => t.state !== "mergeMoved");
 
     maxId = Math.max(...tiles.map(t => t.id));
 
-    let result: GameState;
-    
     switch (dir) {
-        case "up": result = moveTiles(tiles, "col", true); break;
-        case "down": result = moveTiles(tiles, "col", false); break;
-        case "left": result = moveTiles(tiles, "row", true); break;
-        case "right": result = moveTiles(tiles, "row", false); break;
+        case "up": moveTiles(tiles, "col", true); break;
+        case "down": moveTiles(tiles, "col", false); break;
+        case "left": moveTiles(tiles, "row", true); break;
+        case "right": moveTiles(tiles, "row", false); break;
     }
 
-    const newTiles = reduceGameStateToTiles(result);
-    if (newTiles.length < 16) {
-        result.spawned.push(spawnTile(newTiles));
+    if (tiles.length < 16) {
+        spawnTile(tiles);
     }
 
-    return result;
+    return tiles;
 }

@@ -6,9 +6,8 @@
   --title: #230f08;
 
   /* set in useGame */
-  --tile-move-time: 0ms;
-  --tile-merge-time: 0ms;
-  --tile-spawn-time: 0ms;
+  --tile-move-time: 200ms;
+  --tile-spawn-time: 200ms;
 
   /* mobile default */
   --tile-size: 60px;
@@ -114,6 +113,13 @@ main {
   top: var(--gap);
   left: var(--gap);
 
+  will-change: transform;
+  transition: transform var(--tile-move-time) cubic-bezier(0.3, 0, 0.5, 1.25);
+
+  font-size: 1.2rem;
+}
+
+.tile-inner {
   width: var(--tile-size);
   height: var(--tile-size);
 
@@ -125,10 +131,29 @@ main {
   border: 3px solid rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 
-  font-size: 1.2rem;
+  font-size: inherit;
   font-weight: bold;
 
-  transition: transform var(--tile-move-time) ease;
+  -webkit-user-drag: none;
+}
+
+.tile-inner.merged {
+  animation: merge var(--tile-spawn-time) ease;
+}
+
+.tile-inner.spawned {
+  animation: spawn var(--tile-spawn-time) ease;
+}
+
+@keyframes merge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes spawn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
 
 /* tablet */

@@ -1,43 +1,35 @@
 import TileView from "./TileView.tsx";
 import useKeyboard from "../hooks/useKeyboard.tsx";
 import useSwipe from "../hooks/useSwipe.tsx";
-import type {AnimPhase, Direction, GameState, Tile} from "../types.ts";
+import type {AnimPhase, Direction, Tile} from "../types.ts";
+import useTileSizeGap from "../hooks/useTileSizeGap.tsx";
+import {copyTile} from "../util.ts";
 
 interface Props {
-    gameState: GameState,
+    tiles: Tile[],
     animPhase: AnimPhase,
     move: (dir: Direction) => void,
     tileColors: readonly string[],
 }
 
-function GameBoard({ gameState, animPhase, move, tileColors }: Props) {
+function GameBoard({ tiles, animPhase, move, tileColors }: Props) {
     const { swipeStart, swipeEnd } = useSwipe(move);
     useKeyboard(move);
 
-    const tiles: { tile: Tile, specialClass: string }[] = [
-        ...gameState.unmodified.map(t => ({ tile: t, specialClass: ""})),
-        ...gameState.moved.map(t => ({ tile: t, specialClass: ""})),
-    ];
+    const { tileSize, gap } = useTileSizeGap();
 
     switch (animPhase) {
+        case "idle":
+            tiles = tiles.filter(t => t.state !== "mergeMoved");
+            tiles = tiles.map(t => copyTile(t, { state: "unmodified" }));
+            break;
+
         case "moving":
-            tiles.push(
-                ...gameState.mergeMoved.map(t => ({ tile: t, specialClass: ""})),
-            );
+            tiles = tiles.filter(t => t.state === "unmodified" || t.state === "moved" || t.state === "mergeMoved");
             break;
 
         case "spawning":
-            tiles.push(
-                ...gameState.merged.map(t => ({ tile: t, specialClass: "merged"})),
-                ...gameState.spawned.map(t => ({ tile: t, specialClass: "spawned"})),
-            );
-            break;
-
-        case "idle":
-            tiles.push(
-                ...gameState.merged.map(t => ({ tile: t, specialClass: ""})),
-                ...gameState.spawned.map(t => ({ tile: t, specialClass: ""})),
-            );
+            tiles = tiles.filter(t => t.state !== "mergeMoved");
             break;
     }
 
@@ -56,11 +48,11 @@ function GameBoard({ gameState, animPhase, move, tileColors }: Props) {
 
                 {tiles.map(t =>
                     <TileView
-                        key={t.tile.id}
-                        tile={t.tile}
-                        specialClass={t.specialClass}
+                        key={t.id}
+                        tile={t}
+                        specialClass={t.state}
                         tileColors={tileColors}
-                        posMultiplier={100}
+                        posMultiplier={tileSize + gap}
                     />
                 )}
             </div>

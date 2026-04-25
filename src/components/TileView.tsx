@@ -13,13 +13,19 @@ function TileView({ tile, specialClass, tileColors, posMultiplier }: Props) {
 
     return (
         <div
-            className={`tile ${specialClass}`}
+            className="tile"
             style={{
                 transform: `translate(${x}px, ${y}px)`,
-                background: tileColors[tile.power],
             }}
         >
-            {1 << tile.power}
+            <div
+                className={`tile-inner ${specialClass}`}
+                style={{
+                    background: tileColors[tile.power],
+                }}
+            >
+                {1 << tile.power}
+            </div>
         </div>
     );
 }

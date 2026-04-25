@@ -12,17 +12,20 @@ export type AnimPhase = "idle" | "moving" | "spawning";
 
 ////////////////////////////////////
 
+export type TileState = "unmodified" | "moved" | "mergeMoved" | "merged" | "spawned";
+
 export type Tile = {
-    readonly id: number,
-    readonly power: number,
-    readonly row: number,
-    readonly col: number,
+    id: number,
+    power: number,
+    state: TileState,
+    row: number,
+    col: number,
 }
 
-export type GameState = {
-    unmodified: Tile[];
-    moved: Tile[],
-    mergeMoved: Tile[],
-    merged: Tile[],
-    spawned: Tile[],
-}
+// export type GameState = {
+//     unmodified: Tile[];
+//     moved: Tile[],
+//     mergeMoved: Tile[],
+//     merged: Tile[],
+//     spawned: Tile[],
+// }

@@ -5,23 +5,22 @@ import GameBoard from "./components/GameBoard.tsx";
 import useGame from "./hooks/useGame.tsx";
 import {useEffect, useState} from "react";
 import type {AnimPhase} from "./types.ts";
+import {copyTileArray} from "./util.ts";
 
 const TILE_MOVE_TIME_MS = 200;
-const TILE_SPAWN_TIME_MS = 200;
+const TILE_SPAWN_TIME_MS = 250;
 
 function App() {
     const theme = useTheme();
     const [animPhase, setAnimPhase] = useState<AnimPhase>("idle");
-    const {gameState, move, score, newGame} = useGame(
-        animPhase, setAnimPhase, TILE_MOVE_TIME_MS, TILE_SPAWN_TIME_MS
-    );
+    const {tiles, move, score, newGame} = useGame(animPhase, setAnimPhase, TILE_MOVE_TIME_MS, TILE_SPAWN_TIME_MS);
 
     useEffect(() => {
         const style = document.documentElement.style;
 
         style.setProperty("--tile-move-time", `${TILE_MOVE_TIME_MS}ms`);
         style.setProperty("--tile-spawn-time", `${TILE_SPAWN_TIME_MS}ms`);
-    });
+    }, [TILE_MOVE_TIME_MS, TILE_SPAWN_TIME_MS]);
 
     return (
         <div className="game">
@@ -29,7 +28,7 @@ function App() {
                 <GameHeader score={score} bestScore={0} newGameCallback={newGame}/>
             </header>
             <main>
-                <GameBoard gameState={gameState} animPhase={animPhase} move={move} tileColors={theme.tileColors}/>
+                <GameBoard tiles={copyTileArray(tiles)} animPhase={animPhase} move={move} tileColors={theme.tileColors}/>
             </main>
         </div>
     );
