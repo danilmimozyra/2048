@@ -22,9 +22,13 @@ function moveLine(line: Tile[], moveAxis: Axis, ascending: boolean): GameState {
             const movedTile = copyTile(tile, { [moveAxis]: last[moveAxis] });
             const mergedTile = copyTile(last, { id: nextId(), power: tile.power + 1 });
 
-            result.moved.splice(result.moved.indexOf(tile), 1);
+            if (result.unmodified.some(t => t.id === last.id)) {
+                result.unmodified.splice(result.unmodified.findIndex(t => t.id === last.id), 1);
+            } else {
+                result.moved.splice(result.moved.findIndex(t => t.id === last.id), 1);
+            }
 
-            result.mergeMoved.push(movedTile, tile);
+            result.mergeMoved.push(movedTile, last);
             result.merged.push(mergedTile);
 
             last = mergedTile;
