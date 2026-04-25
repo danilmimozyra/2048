@@ -1,7 +1,14 @@
 :root {
+  /* colors */
   --background: #ede8d0;
+  --board-background: #d5b699;
   --board: #8f6a4f;
   --title: #230f08;
+
+  /* set in useGame */
+  --tile-move-time: 0ms;
+  --tile-merge-time: 0ms;
+  --tile-spawn-time: 0ms;
 
   /* mobile default */
   --tile-size: 60px;
@@ -17,9 +24,14 @@ body {
   flex-direction: column;
 }
 
+.game {
+  background: var(--background);
+  color: var(--title);
+}
+
 /* header */
 
-.header {
+header {
   width: 100%;
   max-width: 350px;
   margin: 1rem auto 0.5rem;
@@ -73,6 +85,7 @@ main {
 /* board */
 
 .board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, var(--tile-size));
   grid-template-rows: repeat(4, var(--tile-size));
@@ -85,22 +98,37 @@ main {
 
 /* tile*/
 
-.tile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+.cell {
   width: var(--tile-size);
   height: var(--tile-size);
-
-  font-size: 1.2rem;
-  font-weight: bold;
 
   border-radius: 12%;
   border: 3px solid rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 
-  transition: background 0.2s ease;
+  background: var(--board-background);
+}
+
+.tile {
+  position: absolute;
+  top: var(--gap);
+  left: var(--gap);
+
+  width: var(--tile-size);
+  height: var(--tile-size);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 12%;
+  border: 3px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+
+  font-size: 1.2rem;
+  font-weight: bold;
+
+  transition: transform var(--tile-move-time) ease;
 }
 
 /* tablet */
@@ -111,7 +139,7 @@ main {
     --gap: 8px;
   }
 
-  .header {
+  header {
     max-width: 420px;
     gap: 0.75rem;
   }
@@ -143,7 +171,7 @@ main {
     --gap: 10px;
   }
 
-  .header {
+  header {
     max-width: 500px;
     margin: 2rem auto 0.5rem;
   }

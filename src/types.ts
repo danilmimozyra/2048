@@ -8,41 +8,21 @@ export type Theme = {
 
 export type Direction = "up" | "down" | "left" | "right";
 
-export type AnimPhase = "idle" | "moving" | "merging" | "spawning";
+export type AnimPhase = "idle" | "moving" | "spawning";
 
 ////////////////////////////////////
 
-export type Position = {
-    row: number,
-    col: number,
-}
-
 export type Tile = {
-    id: number;
-    power: number;
-    pos: Position;
+    readonly id: number,
+    readonly power: number,
+    readonly row: number,
+    readonly col: number,
 }
 
-export type TileMove = {
-    id: number,
-    from: Position,
-    to: Position,
-}
-
-export type TileMerge = {
-    fromIds: [number, number],
-    toId: number,
-    at: Position,
-}
-
-export type TileSpawn = {
-    id: number,
-    at: Position,
-}
-
-export type MoveResult = {
-    tiles: Tile[];
-    moves: TileMove[],
-    merges: TileMerge[],
-    spawn?: TileSpawn,
+export type GameState = {
+    unmodified: Tile[];
+    moved: Tile[],
+    mergeMoved: Tile[],
+    merged: Tile[],
+    spawned: Tile[],
 }
