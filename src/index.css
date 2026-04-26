@@ -1,7 +1,8 @@
 :root {
   /* colors */
   --background: #ede8d0;
-  --board-background: #d5b699;
+  --board-background-light: #d5b699;
+  --board-background-dark: #708090;
   --board: #8f6a4f;
   --title: #230f08;
 
@@ -105,7 +106,7 @@ main {
   border: 3px solid rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 
-  background: var(--board-background);
+  background: var(--board-background-light);
 }
 
 .tile {
@@ -146,14 +147,27 @@ main {
 }
 
 @keyframes merge {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes spawn {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* tablet */
@@ -217,5 +231,11 @@ main {
 
   .tile {
     font-size: 1.8rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .cell {
+    background: var(--board-background-dark);
   }
 }
