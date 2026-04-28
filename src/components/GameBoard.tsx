@@ -17,7 +17,8 @@ function GameBoard({ tiles, animPhase, move, tileColors }: Props) {
   useKeyboard(move);
 
   const { tileSize, gap } = useTileSizeGap();
-  console.log(tileSize + " " + gap);
+
+  window.addEventListener("resize", () => useTileSizeGap);
 
   switch (animPhase) {
     case "idle":

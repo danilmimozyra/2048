@@ -118,6 +118,9 @@ main {
   transition: transform var(--tile-move-time) cubic-bezier(0.3, 0, 0.5, 1.25);
 
   font-size: 1.2rem;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .tile-inner {
