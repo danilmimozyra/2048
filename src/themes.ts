@@ -6,8 +6,7 @@ export const themes = {
     title: "#230f08",
 
     tileColors: [
-      "#d5b699",
-      "#c79a74",
+      "#c9a889",
       "#f2b179",
       "#f59563",
       "#f67c5f",
@@ -28,7 +27,6 @@ export const themes = {
     title: "#f1f5f9",
 
     tileColors: [
-      "#708090", // themes.dark.board_background
       "#273449",
       "#334155",
       "#3b4f8a",
