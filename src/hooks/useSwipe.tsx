@@ -8,6 +8,8 @@ function useSwipe<T extends React.MouseEvent | React.TouchEvent>(
   const swipe = useRef<{ x: number; y: number } | null>(null);
 
   function getXY(e: T) {
+    e.preventDefault();
+
     if (e.nativeEvent instanceof MouseEvent) {
       const m = e as React.MouseEvent;
       return { x: m.clientX, y: m.clientY };
