@@ -135,9 +135,7 @@ main {
   font-size: inherit;
   font-weight: bold;
 
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .tile-inner.merged {
