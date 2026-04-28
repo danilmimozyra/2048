@@ -6,6 +6,7 @@ function createNewGameState(): Tile[] {
   const tiles: Tile[] = [];
   spawnTile(tiles);
   spawnTile(tiles);
+  tiles.forEach(t => t.state = "moved");
   return tiles;
 }
 
@@ -66,6 +67,8 @@ function useGame(
     if (animPhase !== "idle") return;
 
     const newTiles = move(tiles, dir);
+
+    if (!newTiles.some(t => t.state === "moved" || t.state === "mergeMoved")) return;
 
     setTiles(newTiles);
     runAnimation().then(() => {
