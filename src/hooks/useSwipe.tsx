@@ -11,7 +11,7 @@ function useSwipe<T extends React.MouseEvent | React.TouchEvent>(move: (directio
             return { x: m.clientX, y: m.clientY };
         }
         else if (e.nativeEvent instanceof TouchEvent) {
-            const t = (e as React.TouchEvent).touches[0];
+            const t = (e as React.TouchEvent).changedTouches[0];
             return { x: t.clientX, y: t.clientY };
         }
         else {

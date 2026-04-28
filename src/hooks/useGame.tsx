@@ -31,6 +31,16 @@ function useGame(
         setAnimPhase("idle");
     }
 
+    function addScore(t: Tile[]) {
+        const powers = t
+            .filter(t => t.state === "merged")
+            .map(t => 1 << t.power);
+
+        if (powers.length === 0) return;
+
+        setScore(score + powers.reduce((a, b) => a + b));
+    }
+
     async function runAnimation() {
         setAnimPhase("moving");
         if (tiles.filter(t => t.state === "moved" || t.state === "mergeMoved").length > 0) {
@@ -48,8 +58,10 @@ function useGame(
     function moveWrapper(dir: Direction) {
         if (animPhase !== "idle") return;
 
-        setTiles(move(tiles, dir));
-        runAnimation();
+        const newTiles = move(tiles, dir);
+
+        setTiles(newTiles);
+        runAnimation().then(() => { addScore(newTiles); });
     }
 
     return {
