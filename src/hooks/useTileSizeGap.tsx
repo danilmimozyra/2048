@@ -5,13 +5,20 @@ function useTileSizeGap() {
     const [gap, setGap] = useState(0);
 
     useEffect(() => {
-        const stripPx = (s: string) =>
-            Number(s.substring(0, s.length - 2));
+        function updateSize() {
+            const stripPx = (s: string) =>
+                Number(s.substring(0, s.length - 2));
 
-        const style = getComputedStyle(document.documentElement);
+            const style = getComputedStyle(document.documentElement);
 
-        setTileSize(stripPx(style.getPropertyValue("--tile-size")));
-        setGap(stripPx(style.getPropertyValue("--gap")));
+            setTileSize(stripPx(style.getPropertyValue("--tile-size")));
+            setGap(stripPx(style.getPropertyValue("--gap")));
+        }
+
+        updateSize();
+        window.addEventListener("resize", updateSize);
+
+        return () => { window.removeEventListener("resize", updateSize); };
     }, []);
 
     return { tileSize, gap };
